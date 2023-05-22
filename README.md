@@ -17,13 +17,19 @@ tensorqtl requires phenotype data be in .bed or .bed.gz format. Phenotype file m
 
 To create such a file, we processed and merged normalised gene expression data and covariates data from different files: chromosome number, phenotype position (start, and end is start+1) were taken from one file, and TargetIds from another file.
 
-### 1.2. 
+### 1.2. TensorQTL analysis.
 
 Tensorqtl provides 2 analyses: cis-eQTL analysis and trans-eQTL analysis.
 
 cis-eQTL analysis is used to identify genetic variants that affect the expression level of genes located nearby (usually within 1 Mb distance from the transcription start site(TSS)).
 
 So, __cis-eQTL analysis__ is the analysis we use in our project.
+
+### 1.3. Extracting variants that are located within 1 Mb (1 million bases) from the SIGLEC14 gene.
+
+Filter cis method removes all QTLs within the specified window. Thus, we can compare original dataframe with all QTLs (returned by map_trans method) and the one the abovementioned method returns, and remove all not-cis-QTls variants. In that way we get the variants within the specified (1Mb) window.
+
+
 
 #### Normal eQTL analysis
 
