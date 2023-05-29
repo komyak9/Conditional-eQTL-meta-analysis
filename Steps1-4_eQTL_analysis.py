@@ -84,13 +84,3 @@ def main():
 if __name__ == "__main__":
     print(tensorqtl.__version__)
     main()
-
-
-
-
-# # remove cis-associations within 1 Mb window
-# trans_df_trans = trans.filter_cis(trans_df, phenotype_pos_df.T.to_dict(), variant_df, window=1000000)
-
-# print(trans_df_trans)
-
-
