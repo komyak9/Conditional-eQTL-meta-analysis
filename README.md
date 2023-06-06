@@ -100,7 +100,7 @@ So we do the same analysis again and add the other lead variants as covariates a
 ##
 
 ##
-# Step 6: Colocalisation
+## Step 6: Colocalisation
 
 This step is done in R. (packagename: coloc, functionnames: marginal and lbf)
 
@@ -120,14 +120,14 @@ If we see in the end that the scatterplot from the colocalistation correlates (o
 
 
 ##
-# Presantation (12th June)
+## Presantation (12th June)
 
 Should be around 10 minutes.
 ##
 
 
 ##
-# Report (14th June)
+## Report (14th June)
 
 Just submit the Readme and done.
 ##
