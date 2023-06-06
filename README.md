@@ -95,4 +95,39 @@ If in the step 3 conditionally independent signals are identified, then at this 
 2. for Signal 2, condition on Signals 1 and 3.
 3. for Signal 3, condition on Signals 1 and 2.
 
+Step 5 is more repeating step 4 on different conditions on the variants. Signal 1,2 and 3 are the lead variants we found in step 4. 
+So we do the same analysis again and add the other lead variants as covariates and that for every signal. So we will resieve 3 data frames in total (one for each lead variant). These we can then use for the colocalistion. But we probably have to transform the data in different formats for that.
+##
+
+##
+# Step 6: Colocalisation
+
+This step is done in R. (packagename: coloc, functionnames: marginal and lbf)
+
+We want the pvalues and stderrors for all the variants out of the previous step.
+
+We can do a scatterplot and see if they correlate. (Like on the nodes from the Ipad).
+
+(???Then we can go to the eqtl-catalog (Website) and extraxt the exact signals out of the protein? -> These are from fine mapping, and if they look the same as what we have then the project is a success.??? -> Dont know exactly anymore what is meant with that but maybe it was the data for the scatterplot described above.)
+
+And then we can test the collocolisation. 
+Before colocalisation we have to change the scale of the variables somehow. We need lbf and pvalue? 
+-> We can use the Code example from Kaur and only need to download the files  from the links he sent and change the data with our data. 
+And we need to change the code a bit because we have to run the coloc method for every signal.
+
+If we see in the end that the scatterplot from the colocalistation correlates (or was it something else?), then the project is a success and we showed this method of analysis works, so I can be then scaled up to be actually used instead of the suzie method? (Dont know the exact usage of this anymore)
+##
+
+
+##
+# Presantation (12th June)
+
+Should be around 10 minutes.
+##
+
+
+##
+# Report (14th June)
+
+Just submit the Readme and done.
 ##
