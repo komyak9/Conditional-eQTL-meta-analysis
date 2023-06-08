@@ -1,15 +1,14 @@
 # Conditional-eQTL-meta-analysis
-Bioinformatics course project
+This Bioinformatics project tries to answer the question, "Is it possible to analyze eQTL data without the Suzie Method?" (Probably Wrong). Therefore the following 6 steps are necessary:
 
-For steps 1-4 we use `tensorqtl` tool.
+For steps 1-5 (Conditional eQTL analysis) we use the tool `tensorqtl`, wich is a python package. These steps were run on HPC.
+For step 6 (Colocalisation) we used R tools.
 
 Required data types:
 
 1. Phenotypes: BED format
 2. Genotypes: PLINK format
 3. Covariates: a tab-delimited text file (covariates x samples) or dataframe (samples x covariates), with row and column headers
-
-For step 5 we use R tools.
 
 ##
 ## Step 1: Perform normal eQTL analysis for SIGLEC14 gene, testing all common (MAF > 1%) variants in +/- 1Mb window around the promoter of the gene.
@@ -136,11 +135,21 @@ In total, in this step we gain 3 dataframes with the structure above, each has 1
 ##
 ## Step 6: Colocalisation
 
-This step is done in R. (packagename: coloc, functionnames: marginal and lbf)
+This step is done in R with help of the package "coloc". Here we tried to find out, if the colocalisation of the previous calculated variant dataframes actually correlate with ???.
+Therefore we did the following.
 
-We want the pvalues and stderrors for all the variants out of the previous step.
+First we have to transform our data in a specific format, so that the colocalisation Methods can read them. This was done like this: 
 
-We can do a scatterplot and see if they correlate. (Like on the nodes from the Ipad).
+[PASTE PIC]
+
+After that we can run the colocalisation on the signals with ??? and we see that ???
+
+[PASTE PIC]
+
+To further analyze this, we can do a scatterplot of ??? and ??? and see if they correlate. (Like on the nodes from the Ipad).
+
+[PASTE PIC]
+
 
 (???Then we can go to the eqtl-catalog (Website) and extraxt the exact signals out of the protein? -> These are from fine mapping, and if they look the same as what we have then the project is a success.??? -> Dont know exactly anymore what is meant with that but maybe it was the data for the scatterplot described above.)
 
@@ -150,6 +159,11 @@ Before colocalisation we have to change the scale of the variables somehow. We n
 And we need to change the code a bit because we have to run the coloc method for every signal.
 
 If we see in the end that the scatterplot from the colocalistation correlates (or was it something else?), then the project is a success and we showed this method of analysis works, so I can be then scaled up to be actually used instead of the suzie method? (Dont know the exact usage of this anymore)
+##
+
+##
+## Conclusion
+As we found out in this project, (...)
 ##
 
 
