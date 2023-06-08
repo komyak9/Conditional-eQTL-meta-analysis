@@ -90,14 +90,48 @@ After getting results, we repeat the process: we take the most strongly associat
 ##
 ## Step 5: Identify all-but-one conditionally indepedent summary statistics.
 
-If in the step 3 conditionally independent signals are identified, then at this step conditioning has to be performed three times:
-1. for Signal 1, condition on Signals 2 and 3 (add both lead SNPs as covariates).
+In the previous steps we identified 3 variants with significant association (top 3 lead variants): chr19_51627384_T_A, chr19_51612691_C_G, chr19_50966950_G_GT.
+
+In this step, conditioning (conditional eQTL analysis) has to be performed three times:
+1. for Signal 1 condition on Signals 2 and 3 (add both lead SNPs as covariates).
 2. for Signal 2, condition on Signals 1 and 3.
 3. for Signal 3, condition on Signals 1 and 2.
 
-Step 5 is more repeating step 4 on different conditions on the variants. Signal 1,2 and 3 are the lead variants we found in step 4. 
-So we do the same analysis again and add the other lead variants as covariates and that for every signal. So we will resieve 3 data frames in total (one for each lead variant). These we can then use for the colocalistion. But we probably have to transform the data in different formats for that.
-##
+, where signal 1 is chr19_51627384_T_A, signal 2 is chr19_51612691_C_G, and signal 3 is chr19_50966950_G_GT.
+
+All-but-one conditional eQTL analysis is similar to that we used in the Step 3. The only difference is that we use different combinations of variants (1+2, 1+3, 2+3) as described above.
+
+In addition, there is a difference of what we need to get in the result. In previous step we needed to identify a variant with the strongest association among all variants. Now, we need to know all variants despite the association significance.
+
+cis_map function used in the Step 3 prints out only the lead variant, and there is no option to show all variants. Thus, in this step we have to utilize map_trans method. Since that it's behaviour is different, we were forced to perform extra work:
+
+```
+    # Extract 2 and 3 variants
+    signals_2_3_df = covariants_df[['chr19_51612691_C_G', 'chr19_50966950_G_GT']]
+    
+    # Run trans eQTL mapping for the SIGLEC14 gene only
+    # No p_val threshold to obtain results for all variants
+    eQTL_result_df = trans.map_trans(genotype_df, phenotype_df.loc[phenotype_pos_df.index=='ENSG00000254415'],
+                                     covariates_df=signals_2_3_df, pval_threshold=1, maf_threshold=0.01)
+    
+    # Extrant all non-cis regions for the SIGLEC14 gene
+    trans_eQTL_result_df = trans.filter_cis(eQTL_result_df,
+                                            phenotype_pos_df.loc[phenotype_pos_df.index=='ENSG00000254415'].T.to_dict(), 
+                                            variant_df, window=1000000)
+    
+    # Remove all non-cis regions from the mapping result
+    # to get only cis mappings for the SIGLEC14 gene
+    merged_df = eQTL_result_df.merge(trans_eQTL_result_df, indicator=True, how='left')
+    cis_result_df = merged_df[merged_df['_merge'] == 'left_only'].drop(columns='_merge')
+    
+```
+At first, we perform trans eQTL analysis. At second, to remove non-cis associations, we identify them, and remove from the eQTL analysis result. As a result, we obtain a dataframe with the following structure (first variant from the code above):
+
+variant_id | phenotype_id | pval | b | b_se | af |
+--------------- | ----- | ------- | ---------- | ---------- | -------------- |
+chr19_50646870_G_A | ENSG00000254415 | 0.824844196111419 | -0.01832097 | 0.08273168 | 0.16741572 |
+
+In total, in this step we gain 3 dataframes with the structure above, each has 14863 elements. These dataframes are used in the colocalization in the Step 6.
 
 ##
 ## Step 6: Colocalisation
