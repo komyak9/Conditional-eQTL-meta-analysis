@@ -163,6 +163,8 @@ labf_df = dplyr::transmute(coloc_df$results, variant = snp, labf_variable1 = lAB
   dplyr::as_tibble()
 ```
 
+![Example Image](./Yannis/coloc.abf.png?raw=true "Results")
+
 
 
 To follow up we do another colocalisation between our results from the first colocalisation and the original siglec14 data, to compare the lbfs and labfs:
