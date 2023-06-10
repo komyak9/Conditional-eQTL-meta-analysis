@@ -135,28 +135,71 @@ In total, in this step we gain 3 dataframes with the structure above, each has 1
 ##
 ## Step 6: Colocalisation
 
-This step is done in R with help of the package "coloc". Here we tried to find out, if the colocalisation of the previous calculated variant dataframes actually correlate with ???.
-Therefore we did the following.
+This step is done in R with help of the package "coloc". Here we trie to find out, if our data actually correlates and colocolized with the real data.
+Therefore we did the following:
 
-First we have to transform our data in a specific format, so that the colocalisation Methods can read them. This was done like this: 
+First we have to transform our each of our 3 dataframes (Further referred as signal 1 - 3) in a specific format, so that the colocalisation Methods can read them. After that we can run the colocalisation with the coloc.abf() Method on signal 1 and signal 2. This was done like this: 
 
-[PASTE PIC]
+```R
+#Run coloc.abf
 
-After that we can run the colocalisation on the signals with ??? and we see that ???
+signal1_list = list(beta = signal1$b, 
+                    
+                    varbeta = signal1$b_se^2, 
+                    
+                    N = rep(445, length(signal1$b)), 
+                    
+                    MAF = pmin(signal1$af, 1-signal1$af), 
+                    
+                    snp = signal1$variant_id, 
+                    
+                    type = "quant")
 
-[PASTE PIC]
+
+coloc_df = coloc.abf(signal1_list, signal2_list)
+
+labf_df = dplyr::transmute(coloc_df$results, variant = snp, labf_variable1 = lABF.df1, labf_variable2 = lABF.df2) %>% 
+  
+  dplyr::as_tibble()
+```
+
+
+
+To follow up we do another colocalisation between our results from the first colocalisation and the original siglec14 data, to compare the lbfs and labfs:
+
+```R
+#Make protein lbf matrix
+
+protein_lbf_mat = as.matrix(dplyr::select(siglec14_df, lbf_variable1:lbf_variable10))
+
+row.names(protein_lbf_mat) = siglec14_df$variant
+
+protein_lbf_mat = t(protein_lbf_mat)
+
+
+
+#Make gene labf variable matrix
+
+gene_lbf_mat = as.matrix(dplyr::select(labf_df, labf_variable1:labf_variable2))
+
+row.names(gene_lbf_mat) = labf_df$variant
+
+gene_lbf_mat = t(gene_lbf_mat)
+
+
+
+#Perform colocalisation
+
+lbf_labf_coloc = coloc.bf_bf(gene_lbf_mat, protein_lbf_mat)
+
+dplyr::filter(lbf_labf_coloc$summary, PP.H4.abf > 0.9)
+```
 
 To further analyze this, we can do a scatterplot of ??? and ??? and see if they correlate. (Like on the nodes from the Ipad).
 
 [PASTE PIC]
 
 
-(???Then we can go to the eqtl-catalog (Website) and extraxt the exact signals out of the protein? -> These are from fine mapping, and if they look the same as what we have then the project is a success.??? -> Dont know exactly anymore what is meant with that but maybe it was the data for the scatterplot described above.)
-
-And then we can test the collocolisation. 
-Before colocalisation we have to change the scale of the variables somehow. We need lbf and pvalue? 
--> We can use the Code example from Kaur and only need to download the files  from the links he sent and change the data with our data. 
-And we need to change the code a bit because we have to run the coloc method for every signal.
 
 If we see in the end that the scatterplot from the colocalistation correlates (or was it something else?), then the project is a success and we showed this method of analysis works, so I can be then scaled up to be actually used instead of the suzie method? (Dont know the exact usage of this anymore)
 ##
@@ -164,18 +207,4 @@ If we see in the end that the scatterplot from the colocalistation correlates (o
 ##
 ## Conclusion
 As we found out in this project, (...)
-##
-
-
-##
-## Presantation (12th June)
-
-Should be around 10 minutes.
-##
-
-
-##
-## Report (14th June)
-
-Just submit the Readme and done.
 ##
