@@ -135,10 +135,10 @@ In total, in this step we gain 3 dataframes with the structure above, each has 1
 ##
 ## Step 6: Colocalisation
 
-This step is done in R with help of the package "coloc". Here we try to find out, if our data actually correlates and colocolized with the real data.
-Therefore we did the following:
+This step is done in R with help of the package "coloc". Here we try to find out, if our data actually correlates and colocolized with the data produced by the SuSiE method.
+Therefore we do the following:
 
-First we have to transform our each of our 3 dataframes (Further referred as signal 1 - 3) in a specific format, so that the colocalisation Methods can read them. After that we can run the colocalisation with the coloc.abf() Method on signal 1 and signal 2. This was done like this: 
+First we have to transform each of our 3 dataframes (Further referred as signal 1 - 3) in a specific format, so that the colocalisation Methods can read them. After that we can run the colocalisation with the coloc.abf() Method on signal 1 and signal 2. This was done like this: 
 
 ```R
 #Run coloc.abf
@@ -166,7 +166,7 @@ labf_df = dplyr::transmute(coloc_df$results, variant = snp, labf_variable1 = lAB
 ![Example Image](./Yannis/coloc.abf.PNG "Results")
 
 
-To follow up we do another colocalisation between our results from the first colocalisation and the original Siglec14 data, to compare the LBFs from Siglec14 with the LABFs of our data:
+To follow up we do another colocalisation between our results from the first colocalisation and the original Siglec14 data, to compare the LBFs from SuSiE with the LABFs of our data:
 
 ```R
 #Make protein lbf matrix
@@ -199,7 +199,7 @@ dplyr::filter(lbf_labf_coloc$summary, PP.H4.abf > 0.9)
 
 
 And finally we can do scatterplots to further analyse our results and see if they correlate.
-First we compare the SIGLEC14 LBFs vs. our calculated LABFs:
+First we compare the SuSiE LBFs vs. our calculated LABFs:
 
 ```R
 #Visualise LABF vs LBF
@@ -244,5 +244,5 @@ ggplot(full_df2, aes(x = lbf_variable1, y = labf_variable2)) + geom_point()
 As one can see in the results from step 6, the correlation is pretty high. Both scatterplots (SIGLEC14 LBFs vs. our calculated LABFs and Protein LBFs vs. our calculated LABFs) nearly look identical and we also found a clear evidence of colocalisation with the PP.h4 values very close to 1.
 
 These results show that our lead question can actually be answered with yes, and it is possible to replace the SuSiE method with all-but-one conditional analysis.
-This found obviously needs to be analysed more, but from this example alone it looks quite promising, so that maybe one day this method could be a standard at analyzing data, when the SuSiE method is not possible.
+This found obviously needs to be analysed more, but from this example alone it looks quite promising, so that maybe one day this method could be a standard at analyzing data, when the SuSiE method is not possible (e.g. in meta-analysis). 
 ##
