@@ -1,5 +1,5 @@
 # Conditional-eQTL-meta-analysis
-This Bioinformatics project tries to answer the question, "Is it possible to analyze eQTL data without the SuSiE Method?". Therefore, we will instead do all-but-one conditional analysis and compare those results at the end with the results from the regular methods. This analysis is done in the following 6 steps:
+This Bioinformatics project tries to answer the question, "Is it possible to analyze eQTL data without the SuSiE Method?". Therefore, we will instead do all-but-one conditional analysis on the SIGLEC14 gene and compare those results at the end with the results from the regular methods. This analysis is done in the following 6 steps:
 
 For steps 1-5 (Conditional eQTL analysis) we use the tool `tensorqtl`, wich is a python package. These steps were run on HPC.
 For step 6 (Colocalisation) we used R tools.
