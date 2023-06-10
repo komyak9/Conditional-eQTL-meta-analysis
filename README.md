@@ -242,6 +242,7 @@ ggplot(full_df2, aes(x = lbf_variable1, y = labf_variable2)) + geom_point()
 ##
 ## Conclusion
 As one can see in the results from step 6, the correlation is pretty high. Both scatterplots (SIGLEC14 LBFs vs. our calculated LABFs and Protein LBFs vs. our calculated LABFs) nearly look identical and we also found a clear evidence of colocalisation with the PP.h4 values very close to 1.
+
 These results show that our lead question can actually be answered with yes, and it is possible to replace the SuSiE method with all-but-one conditional analysis.
 This found obviously needs to be analysed more, but from this example alone it looks quite promising, so that maybe one day this method could be a standard at analyzing data, when the SuSiE method is not possible.
 ##
