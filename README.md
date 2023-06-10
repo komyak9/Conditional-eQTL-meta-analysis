@@ -163,11 +163,10 @@ labf_df = dplyr::transmute(coloc_df$results, variant = snp, labf_variable1 = lAB
   dplyr::as_tibble()
 ```
 
-![Example Image](./Yannis/coloc.abf.png?raw=true "Results")
+![Example Image](./Yannis/coloc.abf.PNG "Results")
 
 
-
-To follow up we do another colocalisation between our results from the first colocalisation and the original siglec14 data, to compare the lbfs and labfs:
+To follow up we do another colocalisation between our results from the first colocalisation and the original Siglec14 data, to compare the LBFs from Siglec14 with the LABFs of our data:
 
 ```R
 #Make protein lbf matrix
@@ -196,6 +195,8 @@ lbf_labf_coloc = coloc.bf_bf(gene_lbf_mat, protein_lbf_mat)
 
 dplyr::filter(lbf_labf_coloc$summary, PP.H4.abf > 0.9)
 ```
+![Example Image](./Yannis/coloc.bf_bf.PNG "Results")
+
 
 To further analyze this, we can do a scatterplot of ??? and ??? and see if they correlate. (Like on the nodes from the Ipad).
 
