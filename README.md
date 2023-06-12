@@ -15,7 +15,7 @@ Required data types:
 
 #### Normal eQTL analysis
 
-A normal eQTL analysis typically involves testing for genetic variants that are associated with changes in gene expression levels (expression quantitative trait loci or eQTLs) across the genome, without any assumptions about the relationship between the genetic variant and the gene's location. So, no other variables are used.
+A normal eQTL analysis typically involves testing for genetic variants that are associated with changes in gene expression levels (expression quantitative trait loci or eQTLs) across the genome, without any assumptions about the relationship between the genetic variant and the gene's location. So, no other variables (other variants as covariants) are used.
 
 The term "eQTL" stands for expression quantitative trait loci, and it refers to genetic variants (usually single nucleotide polymorphisms, or SNPs) that are associated with differences in gene expression levels.
 
@@ -31,21 +31,18 @@ Tensorqtl provides 2 analyses: cis-eQTL analysis and trans-eQTL analysis.
 
 cis-eQTL analysis is used to identify genetic variants that affect the expression level of genes located nearby (usually within 1 Mb distance from the transcription start site(TSS)).
 
-So, __cis-eQTL analysis__ is the type of analysis we use in our project. Parameters used: maf_threshold=0.01, window=1000000. Besides, we run the analysis only for 19th chromosome as the gene is located there.
+So, __cis-eQTL analysis__ is the type of analysis we use for steps 1-4. Parameters used: maf_threshold=0.01, window=1000000. Besides, we run the analysis only for the SIGLEC14 (ENSG00000254415) gene.
 
 ```python
-eQTL_result_df = cis.map_cis(genotype_df, variant_df, phenotype_df.loc[phenotype_pos_df['chr']=='19'], phenotype_pos_df, maf_threshold=0.01, window=1000000)
+eQTL_result_df = cis.map_cis(genotype_df, variant_df, phenotype_df.loc[phenotype_pos_df.index=='ENSG00000254415'], phenotype_pos_df, maf_threshold=0.01, window=1000000)
 ```
 
 ##
 ## Step 2: Identify the most strongly associated variant (lead variant).
 
-At first, we need to extract results for the SIGLEC14 gene:
-```python
-eQTL_SIGLEC14_df = eQTL_result_df[eQTL_result_df.index=='ENSG00000254415']
-```
+Lead variant is the variant with the lowest p value.
 
-By default, only the lead variant is displayed after the tensorqtl cis mapping. This, after the first step we get the following dataframe with the lead variant (chr19_51627384_T_A).
+By default, only the lead variant is displayed as output after the tensorqtl cis mapping. Thus, after the first step we get the following dataframe with the lead variant (chr19_51627384_T_A):
 
 phenotype_id | num_var | beta_shape1 | beta_shape2 | true_df | pval_true_df | variant_id | tss_distance | ma_samples | ma_count | af | pval_nominal | slope | slope_se | pval_perm | pval_beta |
 --------------- | ----- | ------- | ---------- | ---------- | -------------- | ------------------ | ------ | --- | --- | -------- | -------------- | --------- | -------- | ------ | --------
@@ -66,7 +63,7 @@ cov_df = genotype_df.loc[eQTL_SIGLEC14_df['variant_id']].T
 Having such a dataframe, we run the same cis-mapping tensorqtl method with maf_threshold=0.01, window=1000000 parameters and also add the covariant dataframe as a parameter: covariates_df=cov_df.
 
 ```python
-eQTL_result_df = cis.map_cis(genotype_df, variant_df, phenotype_df.loc[phenotype_pos_df['chr']=='19'],
+eQTL_result_df = cis.map_cis(genotype_df, variant_df, phenotype_df.loc[phenotype_pos_df.index=='ENSG00000254415'],
                                      phenotype_pos_df, covariates_df=cov_df, maf_threshold=0.01, window=1000000)
 ```
 
@@ -75,7 +72,7 @@ After getting results, we repeat the process: we take the most strongly associat
 ```python
     while eQTL_SIGLEC14_df['pval_nominal'].iloc[0] < 1e-5:
         # Performing conditional eQTL analysis
-        eQTL_result_df = cis.map_cis(genotype_df, variant_df, phenotype_df.loc[phenotype_pos_df['chr']=='19'],
+        eQTL_result_df = cis.map_cis(genotype_df, variant_df, phenotype_df.loc[phenotype_pos_df.index=='ENSG00000254415'],
                                      phenotype_pos_df, covariates_df=cov_df, maf_threshold=0.01, window=1000000)
         
         # Extracting results for the SIGLEC14 gene
@@ -86,8 +83,12 @@ After getting results, we repeat the process: we take the most strongly associat
         cov_df = pd.merge(cov_df, cov_df_temp, left_index=True, right_index=True)
 ```
 
+In this step, we found 2 more variants with a significant association: chr19_51612691_C_G and chr19_50966950_G_GT.
+
 ##
 ## Step 5: Identify all-but-one conditionally indepedent summary statistics.
+
+All-but-one conditional independent eQTL analysis is used to evaluate the independence of each variant's association with gene expression after conditioning on the other variants in the haplotype (a group of correlated variants).
 
 In the previous steps we identified 3 variants with significant association (top 3 lead variants): chr19_51627384_T_A, chr19_51612691_C_G, chr19_50966950_G_GT.
 
@@ -100,11 +101,11 @@ In this step, conditioning (conditional eQTL analysis) has to be performed three
 
 All-but-one conditional eQTL analysis is similar to that we used in the Step 3. The only difference is that we use different combinations of variants (1+2, 1+3, 2+3) as described above.
 
-In addition, there is a difference of what we need to get in the result. In previous step we needed to identify a variant with the strongest association among all variants. Now, we need to know all variants despite the association significance.
+In addition, there is a difference of what we need to get in the result. In previous step we needed to identify variants with the strongest association among all of them. Now, we need to know all variants despite the association significance (all 14863 variants for the SIGLEC14 gene).
 
 cis_map function used in the Step 3 prints out only the lead variant, and there is no option to show all variants. Thus, in this step we have to utilize map_trans method. Since that it's behaviour is different, we were forced to perform extra work:
 
-```
+```python
     # Extract 2 and 3 variants
     signals_2_3_df = covariants_df[['chr19_51612691_C_G', 'chr19_50966950_G_GT']]
     
@@ -124,7 +125,7 @@ cis_map function used in the Step 3 prints out only the lead variant, and there 
     cis_result_df = merged_df[merged_df['_merge'] == 'left_only'].drop(columns='_merge')
     
 ```
-At first, we perform trans eQTL analysis. At second, to remove non-cis associations, we identify them, and remove from the eQTL analysis result. As a result, we obtain a dataframe with the following structure (first variant from the code above):
+At first, we perform trans eQTL analysis that covers all variants (within and without 1Mb window). At second, to remove non-cis associations, we identify them, and remove from the eQTL analysis result. In this way, we obtain a dataframe with the following structure (only first variant as a example):
 
 variant_id | phenotype_id | pval | b | b_se | af |
 --------------- | ----- | ------- | ---------- | ---------- | -------------- |
