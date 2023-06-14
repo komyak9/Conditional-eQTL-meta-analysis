@@ -1,4 +1,7 @@
 # Conditional-eQTL-meta-analysis
+
+## Introduction
+
 This Bioinformatics project tries to answer the question, "Is it possible to do eQTL analysis without the SuSiE Method?". Therefore, we will instead do all-but-one conditional analysis on the SIGLEC14 gene and compare those results at the end with the results from the regular methods. This analysis is done in the following 6 steps:
 
 For steps 1-5 (Conditional eQTL analysis) we use the tool `tensorqtl`, wich is a python package. These steps were run on HPC.
@@ -49,7 +52,7 @@ phenotype_id | num_var | beta_shape1 | beta_shape2 | true_df | pval_true_df | va
 ENSG00000254415 | 14863 | 1.03784 | 2284.05127 | 397.486603 | 4.515546e-09 | chr19_51627384_T_A | -19442 | 105 | 111 | 0.124719 | 5.973180e-10 | -0.615058 | 0.097147 | 0.0001 | 0.000007
 
 ##
-## Step 3. Perform conditional eQTL analysis for SIGLEC14 by adding the lead variant as a covariate into the model.
+## Step 3. Perform conditional eQTL analysis for SIGLEC14 by adding the lead variant as a covariate into the model, and
 ## Step 4: Repeat this until no significant (p < 1e-5) associations remain.
 
 For these steps, we need to create a covariant dataframe. Dataframe row indexes must be sample ids, and each column - variant id. The values are the genotype dosages (0, 1, or 2) for the variant in each individual (sample id).
@@ -238,12 +241,27 @@ ggplot(full_df2, aes(x = lbf_variable1, y = labf_variable2)) + geom_point()
 ![Example Image](./Yannis/Protein_LBFs_vs_LABFs.PNG)
 ![Example Image](./Yannis/Protein_LBFs_vs_LABFs2.PNG)
 
-##
 
 ##
-## Conclusion
+## Results
 As one can see in the results from step 6, the correlation is pretty high. Both scatterplots (SIGLEC14 LBFs vs. our calculated LABFs and Protein LBFs vs. our calculated LABFs) nearly look identical and we also found a clear evidence of colocalisation with the PP.h4 values very close to 1.
 
 These results show that our lead question can actually be answered with yes, and it is possible to replace the SuSiE method with all-but-one conditional analysis.
-This found obviously needs to be analysed more, but from this example alone it looks quite promising, so that maybe one day this method could be a standard at analyzing data, when the SuSiE method is not possible (e.g. in meta-analysis). 
+
 ##
+## Discussion
+
+This found obviously needs to be analysed more, but from this example alone it looks quite promising, so that maybe one day this method could be a standard at analyzing data, when the SuSiE method is not possible (e.g. in meta-analysis).
+
+The main struggle turned out to be is the tensorqtl tool. We figured out that it is impossible to use it in Windows platforms. Moreover, documentation is quite short and not fully user-friednly. We would recommend to use tensorqtl to a person with some basic understanding of programming.
+
+##
+## Author contribution
+
+
+Yuliia Siur - eQTL analysis (steps 1-5)
+
+Yannis Fynn Meyer - Colocalization (step 6)
+
+Both - preliminary data analysis, presentation
+
